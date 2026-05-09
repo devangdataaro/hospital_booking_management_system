@@ -1,0 +1,2125 @@
+{
+	"info": {
+		"_postman_id": "29dfaa00-9cb4-4c49-b896-6326382cc3c3",
+		"name": "Hospital Booking Management API (Passport)",
+		"description": "Complete API collection for Hospital Booking Management System with Role-Based Access Control (RBAC) and Laravel Passport authentication.\n\n## Features\n- JWT Token Authentication (Passport Personal Access Tokens)\n- Role-Based Access Control (Admin, Doctor, Patient, Receptionist)\n- Permission-based endpoints\n- Auto-save authentication token\n- 27 endpoints across 8 categories\n\n## Quick Start\n1. Run: `php artisan serve`\n2. Execute \"Login (Admin)\" request\n3. Token auto-saves to `{{access_token}}` variable\n4. Test any protected endpoint\n\n## Default Users\n- **Admin**: admin@hospital.com / password\n- **Doctor**: doctor1@hospital.com / password\n\n## Variables\n- `base_url`: http://localhost:8000/api\n- `access_token`: Auto-populated after login",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42111933",
+		"_collection_link": "https://helpy8.postman.co/workspace/Booking-Management-system~0208406b-4a9a-4e6e-9f8c-d91d744389a0/collection/42111933-29dfaa00-9cb4-4c49-b896-6326382cc3c3?action=share&source=collection_link&creator=42111933"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Login (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.access_token) {",
+									"        pm.collectionVariables.set(\"access_token\", jsonData.data.access_token);",
+									"        pm.environment.set(\"access_token\", jsonData.data.access_token);",
+									"        console.log(\"✅ Token saved:\", jsonData.data.access_token.substring(0, 50) + \"...\");",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@hospital.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login with admin credentials. Returns JWT token (Personal Access Token) that auto-saves to collection variables.\n\n**Credentials:**\n- Email: admin@hospital.com\n- Password: password\n\n**Response includes:**\n- `access_token`: JWT token for authentication\n- `token_type`: Bearer\n- `user`: User object with roles"
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"admin@hospital.com\",\n    \"password\": \"password\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:06:05 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"Login successful\",\n    \"data\": {\n        \"user\": {\n            \"id\": 1,\n            \"name\": \"Admin User\",\n            \"email\": \"admin@hospital.com\",\n            \"roles\": [\n                \"admin\"\n            ]\n        },\n        \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTllMGI0Ni05Yzk2LTczZjctOWNmMy03Njk4Mzc2M2YwZTAiLCJqdGkiOiI1YmE2OTM5OWJjZmJkN2YzNmY4ZmMwZTY1YTRiYzU1MjM1OTZmOTZjOWY0NDRkNTk3MTEzOGRkZWIxMGJlYmUwZjg5YTcwMDFkZGIwZmI5YSIsImlhdCI6MTc3ODMwNjc2NS44MTk4NTEsIm5iZiI6MTc3ODMwNjc2NS44MTk4NTIsImV4cCI6MTc5NDIwNDM2NS43OTM1NDksInN1YiI6IjEiLCJzY29wZXMiOltdfQ.ZKT1ERdmzamWYZ3H6DsQsSK0z4hz1Anmqrgk_woh1WwaJgMjZkNEDDmZw704su-OnBCmP-jIzUH-qJaes8Lb2NQT72iAx1psBJOHfIleN7ZsYk2FjLl7dBs6RbSKYab-YRyTcQiidZZd7KXSim0Hj_Vf_1pgkVSIqOo6LcoG0zYNBH4-7Yr4I-CYijvU1exG2O71sODcGctOA9vJByvL4WXI1VZZwbb3RuFoIAo8xPby52ScNuFBcoSWtsiQAEwaKYm3L6ZEqDBlmkxRNb0yF3c4y7uRNerd267FdW-CV3gQv8rLy2VJQ_PbL7XEahe1UmSM2Le-L4_RGG6hbBcj61hRoj2yHJodG2rX8u0tOHHZ_NneDTjFgQMxGv-j7wkdKUFiDDy2vd_4l5mw-9Ss6u8dn38ljO4FB12bA_3OmlcG_EOHBT3Oa4iUn6WD4gvpj4Rtg8w91hjVUfhHSEfQT-7Kjbp0XsK1AcFRGojDABVj_1jQLbNl_jSVZTkQbaQtrbj5qsLE-U1h8iGC3SHZ-UJKHi9iObO7RWEi6ucJ6imuXH_g8aToovs5ssqK-akiix-zITsQxUlvPx1lMwDGtPj1L13W8XQ7DVKYxgGrhCWZBQJuXcpM0kuJnSRfklK1EJu0a4WdEADrYMwedS1qtTwFMF-rjV95g4-jeJxlo9o\",\n        \"token_type\": \"Bearer\"\n    }\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"admin@hospital.com\",\n    \"password\": \"password11\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:14:50 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 401,\n    \"success\": false,\n    \"message\": \"Login failed: The provided credentials are incorrect.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login (Doctor)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.access_token) {",
+									"        pm.collectionVariables.set(\"access_token\", jsonData.data.access_token);",
+									"        pm.environment.set(\"access_token\", jsonData.data.access_token);",
+									"        console.log(\"✅ Token saved:\", jsonData.data.access_token.substring(0, 50) + \"...\");",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"doctor1@hospital.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login with doctor credentials. Returns JWT token that auto-saves to collection variables.\n\n**Credentials:**\n- Email: doctor1@hospital.com (or doctor2, doctor3, etc.)\n- Password: password"
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"doctor1@hospital.com\",\n    \"password\": \"password\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:15:13 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Login successful\",\n    \"data\": {\n        \"user\": {\n            \"id\": 2,\n            \"name\": \"Dr. Doctor 1\",\n            \"email\": \"doctor1@hospital.com\",\n            \"roles\": [\n                \"doctor\"\n            ]\n        },\n        \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTllMGI0Ni05Yzk2LTczZjctOWNmMy03Njk4Mzc2M2YwZTAiLCJqdGkiOiJhOTI4ZjkyNDFkMzU0OTY2NDQ0MmMzN2U1ZmRmNzdjMGJlNTc3YWEwZDUyNGQ4ODUzMTM2ZTAyNTcwMzg2ZTBiNGMyMDZkYTRkYmFhYzU1MiIsImlhdCI6MTc3ODMwNzMxMy44NTAxNTksIm5iZiI6MTc3ODMwNzMxMy44NTAxNiwiZXhwIjoxNzk0MjA0OTEzLjgyNTYyMiwic3ViIjoiMiIsInNjb3BlcyI6W119.XaGWTjlK0pk9KcK6UYg4vfbOnub0m6RpD4iiqS0ONmXSZkwDXsT1f8O21aLqy-CX5L97hJGv58S-qsk7RxpaRYDPvLZCaCOrpefBZND3Sy8JH8riHHlUEMdMTJyQ1wmImVJeX6SAhKtuv4y2KNqfrn4fNiAhJ8iirETS5cppkc0OyOnRtCxIlMPHzUFBlxhLBtRz04L24RpuUwmWuZShl-JivNRPRMnApgpQ1_i8OaqU0BFzQPcJ2OdQDhutZ-Jo7DARLlX4GavXFfq3G2Ui2ZMuGbmxd6zvTwbrkQF_Nsl2nAP8vTOXes__-32Hk_QAucYgJX1Gb4Ts3RGh8iwXNYlYDTkd12SQRPD_yHFZyxFrTKJjup_138jZEzpZhBVbAyc4njAHGbrZ8AlfYsG94Rghqi_3r9oRCViJHTfqvnbJhf0dnXEq_Q74ObWNQM9oHXi3WOWF9Fs-meTVWgevUGfTeAUII2MVKFg0OkKNe1A7f-woLeufoPK2ljS873e-L4wcZRLxFiJo9_2rRehUOOEAirXkIVldHHuOqGsMJwwy2VABL3L3bakc8dzmK3wvEBpQpac3JOiQW4KvkKNnds5exzc_SAxFgwy2DI4sdHZOBxqGViMHSsoVb38CtXYdz0W0DBG9NBvkhRfcabH7_skLHSfONGCOuCSBwDWVKxE\",\n        \"token_type\": \"Bearer\"\n    }\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"doctor1@hospital.com\",\n    \"password\": \"password11\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:16:10 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 401,\n    \"success\": false,\n    \"message\": \"Login failed: The provided credentials are incorrect.\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Authentication endpoints using Laravel Passport Personal Access Tokens (JWT)."
+		},
+		{
+			"name": "2. User Management",
+			"item": [
+				{
+					"name": "List Users (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users?search=&treatment_id=&sort_by=name&sort_order=asc&per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by name or email"
+								},
+								{
+									"key": "treatment_id",
+									"value": "",
+									"description": "Filter doctors by treatment"
+								},
+								{
+									"key": "sort_by",
+									"value": "name",
+									"description": "Sort by: name, email"
+								},
+								{
+									"key": "sort_order",
+									"value": "asc",
+									"description": "Order: asc, desc"
+								},
+								{
+									"key": "per_page",
+									"value": "15",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Public endpoint to list all users/doctors with filtering and sorting options."
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users?search=&treatment_id=&sort_by=name&sort_order=asc&per_page=15",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "",
+											"description": "Search by name or email"
+										},
+										{
+											"key": "treatment_id",
+											"value": "",
+											"description": "Filter doctors by treatment"
+										},
+										{
+											"key": "sort_by",
+											"value": "name",
+											"description": "Sort by: name, email"
+										},
+										{
+											"key": "sort_order",
+											"value": "asc",
+											"description": "Order: asc, desc"
+										},
+										{
+											"key": "per_page",
+											"value": "15",
+											"description": "Items per page"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:17:45 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Record fetched successfully\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": 2,\n                \"name\": \"Dr. Doctor 1\",\n                \"email\": \"doctor1@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"bookings_count\": 0\n            },\n            {\n                \"id\": 11,\n                \"name\": \"Dr. Doctor 10\",\n                \"email\": \"doctor10@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"bookings_count\": 0\n            },\n            {\n                \"id\": 3,\n                \"name\": \"Dr. Doctor 2\",\n                \"email\": \"doctor2@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"bookings_count\": 0\n            },\n            {\n                \"id\": 4,\n                \"name\": \"Dr. Doctor 3\",\n                \"email\": \"doctor3@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"bookings_count\": 0\n            },\n            {\n                \"id\": 5,\n                \"name\": \"Dr. Doctor 4\",\n                \"email\": \"doctor4@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"bookings_count\": 0\n            },\n            {\n                \"id\": 6,\n                \"name\": \"Dr. Doctor 5\",\n                \"email\": \"doctor5@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"bookings_count\": 0\n            },\n            {\n                \"id\": 7,\n                \"name\": \"Dr. Doctor 6\",\n                \"email\": \"doctor6@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"bookings_count\": 0\n            },\n            {\n                \"id\": 8,\n                \"name\": \"Dr. Doctor 7\",\n                \"email\": \"doctor7@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"bookings_count\": 0\n            },\n            {\n                \"id\": 9,\n                \"name\": \"Dr. Doctor 8\",\n                \"email\": \"doctor8@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"bookings_count\": 0\n            },\n            {\n                \"id\": 10,\n                \"name\": \"Dr. Doctor 9\",\n                \"email\": \"doctor9@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:51.000000Z\",\n                \"bookings_count\": 0\n            }\n        ],\n        \"pagination\": {\n            \"current_page\": 1,\n            \"per_page\": 15,\n            \"total\": 10,\n            \"last_page\": 1,\n            \"from\": 1,\n            \"to\": 10\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create User (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Dr. Jane Smith\",\n    \"email\": \"jane.smith@hospital.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Create a new user/doctor. **Admin only** - requires `user.create` permission."
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Dr. Jane Smith\",\n    \"email\": \"jane.smith@hospital.com\",\n    \"password\": \"password123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:38:47 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"success\": true,\n    \"message\": \"User created successfully\",\n    \"data\": {\n        \"id\": 13,\n        \"name\": \"Dr. Jane Smith\",\n        \"email\": \"jane.smith@hospital.com\",\n        \"roles\": [\n            \"doctor\"\n        ],\n        \"created_at\": \"2026-05-09T06:38:47.000000Z\"\n    }\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Dr. Jane Smith\",\n    \"email\": \"jane.smith@hospital.com\",\n    \"password\": \"password123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Unprocessable Content",
+							"code": 422,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:39:55 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"The email has already been taken.\",\n    \"errors\": {\n        \"email\": [\n            \"The email has already been taken.\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Edit User Profile (Authenticated)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Dr. Doctor 10\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						},
+						"description": "Edit authenticated user's own profile. Requires `user.edit` permission."
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Dr. Doctor 10\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/users/profile",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										"profile"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:20:44 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"User updated successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"Dr. Doctor 10\",\n        \"email\": \"admin@hospital.com\",\n        \"roles\": [\n            \"admin\"\n        ]\n    }\n}"
+						}
+					]
+				}
+			],
+			"description": "User management endpoints for creating users and profile editing."
+		},
+		{
+			"name": "3. Treatment Management",
+			"item": [
+				{
+					"name": "List Treatments (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/treatments?search=&sort_by=price&sort_order=asc&currency=USD&per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"treatments"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by title"
+								},
+								{
+									"key": "sort_by",
+									"value": "price",
+									"description": "Sort by: duration, price"
+								},
+								{
+									"key": "sort_order",
+									"value": "asc",
+									"description": "Order: asc, desc"
+								},
+								{
+									"key": "currency",
+									"value": "USD",
+									"description": "Currency: USD, EUR, INR, GBP, etc. (Extra Points)"
+								},
+								{
+									"key": "per_page",
+									"value": "15",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Public endpoint to list all treatments with filtering, sorting, and currency conversion."
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/treatments?search=&sort_by=price&sort_order=asc&currency=USD&per_page=15",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"treatments"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "",
+											"description": "Search by title"
+										},
+										{
+											"key": "sort_by",
+											"value": "price",
+											"description": "Sort by: duration, price"
+										},
+										{
+											"key": "sort_order",
+											"value": "asc",
+											"description": "Order: asc, desc"
+										},
+										{
+											"key": "currency",
+											"value": "USD",
+											"description": "Currency: USD, EUR, INR, GBP, etc. (Extra Points)"
+										},
+										{
+											"key": "per_page",
+											"value": "15",
+											"description": "Items per page"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:40:33 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Record fetched successfully\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": 6,\n                \"title\": \"Blood Test\",\n                \"duration\": 10,\n                \"price\": 40,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            },\n            {\n                \"id\": 4,\n                \"title\": \"General Check-up\",\n                \"duration\": 15,\n                \"price\": 50,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            },\n            {\n                \"id\": 5,\n                \"title\": \"X-Ray\",\n                \"duration\": 10,\n                \"price\": 60,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            },\n            {\n                \"id\": 10,\n                \"title\": \"Eye Examination\",\n                \"duration\": 30,\n                \"price\": 70,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            },\n            {\n                \"id\": 2,\n                \"title\": \"ENT Consultation\",\n                \"duration\": 20,\n                \"price\": 80,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            },\n            {\n                \"id\": 9,\n                \"title\": \"Dermatology Consultation\",\n                \"duration\": 25,\n                \"price\": 85,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            },\n            {\n                \"id\": 7,\n                \"title\": \"Physical Therapy\",\n                \"duration\": 45,\n                \"price\": 90,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            },\n            {\n                \"id\": 1,\n                \"title\": \"Dental Cleaning\",\n                \"duration\": 30,\n                \"price\": 100,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            },\n            {\n                \"id\": 3,\n                \"title\": \"Orthopedic Consultation\",\n                \"duration\": 30,\n                \"price\": 120,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            },\n            {\n                \"id\": 8,\n                \"title\": \"Cardiology Consultation\",\n                \"duration\": 40,\n                \"price\": 150,\n                \"currency\": \"USD\",\n                \"created_at\": \"2026-05-09T05:22:51.000000Z\"\n            }\n        ],\n        \"pagination\": {\n            \"current_page\": 1,\n            \"per_page\": 15,\n            \"total\": 10,\n            \"last_page\": 1,\n            \"from\": 1,\n            \"to\": 10\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Treatment (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"MRI Scan\",\n    \"duration\": 60,\n    \"price\": 250.00,\n    \"user_ids\": [2, 3, 4]\n    \n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/treatments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"treatments"
+							]
+						},
+						"description": "Create a new treatment. **Admin only** - requires `treatment.create` permission.\n\n**Fields:**\n- `title`: Treatment name\n- `duration`: Duration in minutes\n- `price`: Price in USD\n- `user_ids`: Array of doctor IDs who can perform this treatment"
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"MRI Scan\",\n    \"duration\": 60,\n    \"price\": 250.00,\n    \"user_ids\": [2, 3, 4]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/treatments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"treatments"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:41:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"success\": true,\n    \"message\": \"Treatment created successfully\",\n    \"data\": {\n        \"id\": 11,\n        \"title\": \"MRI Scan\",\n        \"duration\": 60,\n        \"price\": \"250.00\",\n        \"doctors\": [\n            {\n                \"id\": 2,\n                \"name\": \"Dr. Doctor 1\",\n                \"email\": \"doctor1@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"pivot\": {\n                    \"treatment_id\": 11,\n                    \"doctor_id\": 2,\n                    \"created_at\": \"2026-05-09T06:41:35.000000Z\",\n                    \"updated_at\": \"2026-05-09T06:41:35.000000Z\"\n                }\n            },\n            {\n                \"id\": 3,\n                \"name\": \"Dr. Doctor 2\",\n                \"email\": \"doctor2@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"pivot\": {\n                    \"treatment_id\": 11,\n                    \"doctor_id\": 3,\n                    \"created_at\": \"2026-05-09T06:41:35.000000Z\",\n                    \"updated_at\": \"2026-05-09T06:41:35.000000Z\"\n                }\n            },\n            {\n                \"id\": 4,\n                \"name\": \"Dr. Doctor 3\",\n                \"email\": \"doctor3@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"pivot\": {\n                    \"treatment_id\": 11,\n                    \"doctor_id\": 4,\n                    \"created_at\": \"2026-05-09T06:41:35.000000Z\",\n                    \"updated_at\": \"2026-05-09T06:41:35.000000Z\"\n                }\n            }\n        ],\n        \"created_at\": \"2026-05-09T06:41:35.000000Z\"\n    }\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"MRI Scan\",\n    \"duration\": 60,\n    \"price\": 250.00\n    \n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/treatments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"treatments"
+									]
+								}
+							},
+							"status": "Unprocessable Content",
+							"code": 422,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:43:34 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"The user ids field must be present.\",\n    \"errors\": {\n        \"user_ids\": [\n            \"The user ids field must be present.\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Edit Treatment (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated MRI Scan\",\n    \"duration\": 90,\n    \"price\": 300.00,\n    \"user_ids\": [2, 3, 4, 5]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/treatments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"treatments",
+								"1"
+							]
+						},
+						"description": "Update an existing treatment. **Admin only** - requires `treatment.edit` permission."
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Updated MRI Scan\",\n    \"duration\": 90,\n    \"price\": 300.00,\n    \"user_ids\": [2, 3, 4, 5]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/treatments/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"treatments",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:44:28 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Treatment updated successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Updated MRI Scan\",\n        \"duration\": 90,\n        \"price\": \"300.00\",\n        \"doctors\": [\n            {\n                \"id\": 2,\n                \"name\": \"Dr. Doctor 1\",\n                \"email\": \"doctor1@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"pivot\": {\n                    \"treatment_id\": 1,\n                    \"doctor_id\": 2,\n                    \"created_at\": \"2026-05-09T06:44:28.000000Z\",\n                    \"updated_at\": \"2026-05-09T06:44:28.000000Z\"\n                }\n            },\n            {\n                \"id\": 3,\n                \"name\": \"Dr. Doctor 2\",\n                \"email\": \"doctor2@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:49.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"pivot\": {\n                    \"treatment_id\": 1,\n                    \"doctor_id\": 3,\n                    \"created_at\": \"2026-05-09T06:44:28.000000Z\",\n                    \"updated_at\": \"2026-05-09T06:44:28.000000Z\"\n                }\n            },\n            {\n                \"id\": 4,\n                \"name\": \"Dr. Doctor 3\",\n                \"email\": \"doctor3@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"pivot\": {\n                    \"treatment_id\": 1,\n                    \"doctor_id\": 4,\n                    \"created_at\": \"2026-05-09T06:44:28.000000Z\",\n                    \"updated_at\": \"2026-05-09T06:44:28.000000Z\"\n                }\n            },\n            {\n                \"id\": 5,\n                \"name\": \"Dr. Doctor 4\",\n                \"email\": \"doctor4@hospital.com\",\n                \"email_verified_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"created_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"updated_at\": \"2026-05-09T05:22:50.000000Z\",\n                \"pivot\": {\n                    \"treatment_id\": 1,\n                    \"doctor_id\": 5,\n                    \"created_at\": \"2026-05-09T06:44:28.000000Z\",\n                    \"updated_at\": \"2026-05-09T06:44:28.000000Z\"\n                }\n            }\n        ],\n        \"updated_at\": \"2026-05-09T06:44:28.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Treatment (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/treatments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"treatments",
+								"1"
+							]
+						},
+						"description": "Soft delete a treatment. **Admin only** - requires `treatment.delete` permission.\n\nExisting bookings are preserved with snapshot data."
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/treatments/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"treatments",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:45:04 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Treatment deleted successfully\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Treatment management endpoints for CRUD operations on medical treatments."
+		},
+		{
+			"name": "4. Slot Management (Doctor)",
+			"item": [
+				{
+					"name": "List Doctor Slots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/slots?start_date=2026-05-10&end_date=2026-05-20&sort_by=date&sort_order=asc&per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"slots"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2026-05-10",
+									"description": "Start date filter"
+								},
+								{
+									"key": "end_date",
+									"value": "2026-05-20",
+									"description": "End date filter"
+								},
+								{
+									"key": "sort_by",
+									"value": "date",
+									"description": "Sort by: date"
+								},
+								{
+									"key": "sort_order",
+									"value": "asc",
+									"description": "Order: asc, desc"
+								},
+								{
+									"key": "per_page",
+									"value": "15",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "List authenticated doctor's own availability slots. **Doctor only** - requires `slot.view` permission."
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/slots?start_date=2026-05-10&end_date=2026-05-20&sort_by=date&sort_order=asc&per_page=15",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"slots"
+									],
+									"query": [
+										{
+											"key": "start_date",
+											"value": "2026-05-10",
+											"description": "Start date filter"
+										},
+										{
+											"key": "end_date",
+											"value": "2026-05-20",
+											"description": "End date filter"
+										},
+										{
+											"key": "sort_by",
+											"value": "date",
+											"description": "Sort by: date"
+										},
+										{
+											"key": "sort_order",
+											"value": "asc",
+											"description": "Order: asc, desc"
+										},
+										{
+											"key": "per_page",
+											"value": "15",
+											"description": "Items per page"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:47:03 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Record fetched successfully\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-10T00:00:00.000000Z\",\n                \"start_time\": \"09:00:00\",\n                \"end_time\": \"12:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 2,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-10T00:00:00.000000Z\",\n                \"start_time\": \"14:00:00\",\n                \"end_time\": \"17:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 3,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-11T00:00:00.000000Z\",\n                \"start_time\": \"09:00:00\",\n                \"end_time\": \"12:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 4,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-11T00:00:00.000000Z\",\n                \"start_time\": \"14:00:00\",\n                \"end_time\": \"17:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 5,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-12T00:00:00.000000Z\",\n                \"start_time\": \"09:00:00\",\n                \"end_time\": \"12:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 6,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-12T00:00:00.000000Z\",\n                \"start_time\": \"14:00:00\",\n                \"end_time\": \"17:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            }\n        ],\n        \"pagination\": {\n            \"current_page\": 1,\n            \"per_page\": 15,\n            \"total\": 6,\n            \"last_page\": 1,\n            \"from\": 1,\n            \"to\": 6\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create/Edit/Delete Slots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"start_date\": \"2026-05-10\",\n    \"end_date\": \"2026-05-12\",\n    \"slots\": [\n        {\n            \"start_time\": \"09:00\",\n            \"end_time\": \"12:00\"\n        },\n        {\n            \"start_time\": \"14:00\",\n            \"end_time\": \"17:00\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/slots",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"slots"
+							]
+						},
+						"description": "Create, edit, or delete doctor availability slots. **Doctor only** - requires `slot.create` permission.\n\n**Behavior:**\n- Creates slots for all dates in range (start_date to end_date)\n- Replaces existing slots (upsert)\n- Empty `slots` array deletes all slots for date range\n\n**Example (Delete):**\n```json\n{\n    \"start_date\": \"2026-05-10\",\n    \"end_date\": \"2026-05-12\",\n    \"slots\": []\n}\n```"
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"start_date\": \"2026-05-10\",\n    \"end_date\": \"2026-05-12\",\n    \"slots\": [\n        {\n            \"start_time\": \"09:00\",\n            \"end_time\": \"12:00\"\n        },\n        {\n            \"start_time\": \"14:00\",\n            \"end_time\": \"17:00\"\n        }\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/slots",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"slots"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 06:46:20 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Slots updated successfully\",\n    \"data\": {\n        \"date_range\": {\n            \"start_date\": \"2026-05-10\",\n            \"end_date\": \"2026-05-12\"\n        },\n        \"slots_count\": 6,\n        \"slots\": [\n            {\n                \"id\": 1,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-10T00:00:00.000000Z\",\n                \"start_time\": \"09:00:00\",\n                \"end_time\": \"12:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 2,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-10T00:00:00.000000Z\",\n                \"start_time\": \"14:00:00\",\n                \"end_time\": \"17:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 3,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-11T00:00:00.000000Z\",\n                \"start_time\": \"09:00:00\",\n                \"end_time\": \"12:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 4,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-11T00:00:00.000000Z\",\n                \"start_time\": \"14:00:00\",\n                \"end_time\": \"17:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 5,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-12T00:00:00.000000Z\",\n                \"start_time\": \"09:00:00\",\n                \"end_time\": \"12:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            },\n            {\n                \"id\": 6,\n                \"doctor_id\": 2,\n                \"date\": \"2026-05-12T00:00:00.000000Z\",\n                \"start_time\": \"14:00:00\",\n                \"end_time\": \"17:00:00\",\n                \"created_at\": \"2026-05-09T06:46:20.000000Z\",\n                \"updated_at\": \"2026-05-09T06:46:20.000000Z\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				}
+			],
+			"description": "Doctor availability slot management endpoints."
+		},
+		{
+			"name": "5. Available Slots",
+			"item": [
+				{
+					"name": "List Available Slots (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/available-slots?treatment_id=6&start_date=2026-05-10&end_date=2026-05-12&doctor_id=2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"available-slots"
+							],
+							"query": [
+								{
+									"key": "treatment_id",
+									"value": "6",
+									"description": "Required - Treatment ID"
+								},
+								{
+									"key": "start_date",
+									"value": "2026-05-10",
+									"description": "Optional - Start date (default: today)"
+								},
+								{
+									"key": "end_date",
+									"value": "2026-05-12",
+									"description": "Optional - End date (default: tomorrow)"
+								},
+								{
+									"key": "doctor_id",
+									"value": "2",
+									"description": "Optional - Specific doctor ID"
+								}
+							]
+						},
+						"description": "Public endpoint to check available appointment slots for a treatment.\n\n**Algorithm:**\n1. Fetches doctor slots for date range\n2. Breaks into treatment-duration intervals (10-min increments)\n3. Checks for booking conflicts\n4. Returns available time slots grouped by date\n5. Cached for 5 minutes for performance"
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/available-slots?treatment_id=6&start_date=2026-05-10&end_date=2026-05-12&doctor_id=2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"available-slots"
+									],
+									"query": [
+										{
+											"key": "treatment_id",
+											"value": "6",
+											"description": "Required - Treatment ID"
+										},
+										{
+											"key": "start_date",
+											"value": "2026-05-10",
+											"description": "Optional - Start date (default: today)"
+										},
+										{
+											"key": "end_date",
+											"value": "2026-05-12",
+											"description": "Optional - End date (default: tomorrow)"
+										},
+										{
+											"key": "doctor_id",
+											"value": "2",
+											"description": "Optional - Specific doctor ID"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 07:23:08 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Record fetched successfully\",\n    \"data\": {\n        \"treatment\": {\n            \"id\": 6,\n            \"title\": \"Blood Test\",\n            \"duration\": 10,\n            \"price\": \"40.00\"\n        },\n        \"date_range\": {\n            \"start_date\": \"2026-05-10\",\n            \"end_date\": \"2026-05-12\"\n        },\n        \"available_slots\": {\n            \"2026-05-10\": [\n                \"09:10\",\n                \"16:50\"\n            ],\n            \"2026-05-11\": [\n                \"09:00\",\n                \"16:50\"\n            ],\n            \"2026-05-12\": [\n                \"09:00\",\n                \"16:50\"\n            ]\n        }\n    }\n}"
+						}
+					]
+				}
+			],
+			"description": "Public endpoint to check available appointment slots."
+		},
+		{
+			"name": "6. Booking Management",
+			"item": [
+				{
+					"name": "Create Booking (Public)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"treatment_id\": 6,\n    \"start_date_time\": \"2026-05-10 10:00\",\n    \"doctor_id\": 2,\n    \"name\": \"devang shah\",\n    \"email\": \"devang@gmail.com\",\n    \"phone_number\": \"+1234567880\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/bookings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bookings"
+							]
+						},
+						"description": "Public endpoint for patients to create bookings.\n\n**Smart Features:**\n- `doctor_id` is optional - system auto-assigns available doctor\n- Validates slot availability\n- Saves snapshot of treatment price/duration\n- Checks for booking conflicts\n\n**Snapshot Data:** Treatment price and duration are saved at booking time, so changes to treatment don't affect existing bookings."
+					},
+					"response": [
+						{
+							"name": "not found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"treatment_id\": 1,\n    \"start_date_time\": \"2026-05-10 09:00\",\n    \"doctor_id\": 2,\n    \"name\": \"John Patient\",\n    \"email\": \"john.patient@email.com\",\n    \"phone_number\": \"+1234567890\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/bookings",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"bookings"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 07:05:49 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 404,\n    \"success\": false,\n    \"message\": \"Treatment not found or has been deleted\"\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"treatment_id\": 6,\n    \"start_date_time\": \"2026-05-10 09:00\",\n    \"doctor_id\": 2,\n    \"name\": \"John Patient\",\n    \"email\": \"john.patient@email.com\",\n    \"phone_number\": \"+1234567890\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/bookings",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"bookings"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 07:06:22 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"success\": true,\n    \"message\": \"Booking created successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"treatment\": {\n            \"id\": 6,\n            \"title\": \"Blood Test\",\n            \"duration\": 10,\n            \"price\": \"40.00\"\n        },\n        \"doctor\": {\n            \"id\": 2,\n            \"name\": \"Dr. Doctor 1\",\n            \"email\": \"doctor1@hospital.com\"\n        },\n        \"start_datetime\": \"2026-05-10T09:00:00.000000Z\",\n        \"end_datetime\": \"2026-05-10T09:10:00.000000Z\",\n        \"patient\": {\n            \"name\": \"John Patient\",\n            \"email\": \"john.patient@email.com\",\n            \"phone\": \"+1234567890\"\n        },\n        \"created_at\": \"2026-05-09T07:06:22.000000Z\"\n    }\n}"
+						},
+						{
+							"name": "success - 2",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"treatment_id\": 6,\n    \"start_date_time\": \"2026-05-10 10:00\",\n    \"doctor_id\": 2,\n    \"name\": \"devang shah\",\n    \"email\": \"devang@gmail.com\",\n    \"phone_number\": \"+1234567880\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/bookings",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"bookings"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 07:07:19 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 201,\n    \"success\": true,\n    \"message\": \"Booking created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"treatment\": {\n            \"id\": 6,\n            \"title\": \"Blood Test\",\n            \"duration\": 10,\n            \"price\": \"40.00\"\n        },\n        \"doctor\": {\n            \"id\": 2,\n            \"name\": \"Dr. Doctor 1\",\n            \"email\": \"doctor1@hospital.com\"\n        },\n        \"start_datetime\": \"2026-05-10T10:00:00.000000Z\",\n        \"end_datetime\": \"2026-05-10T10:10:00.000000Z\",\n        \"patient\": {\n            \"name\": \"devang shah\",\n            \"email\": \"devang@gmail.com\",\n            \"phone\": \"+1234567880\"\n        },\n        \"created_at\": \"2026-05-09T07:07:19.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "List Bookings (Admin/Doctor)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/bookings?search=&user_id=&start_date=&end_date=&treatment_id=&is_cancelled=0&sort_by=start_datetime&sort_order=asc&per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bookings"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by patient name, email, or phone"
+								},
+								{
+									"key": "user_id",
+									"value": "",
+									"description": "Filter by doctor ID"
+								},
+								{
+									"key": "start_date",
+									"value": "",
+									"description": "Filter by start date"
+								},
+								{
+									"key": "end_date",
+									"value": "",
+									"description": "Filter by end date"
+								},
+								{
+									"key": "treatment_id",
+									"value": "",
+									"description": "Filter by treatment ID"
+								},
+								{
+									"key": "is_cancelled",
+									"value": "0",
+									"description": "Filter by cancellation status 0  / 1 "
+								},
+								{
+									"key": "sort_by",
+									"value": "start_datetime",
+									"description": "Sort by: start_datetime"
+								},
+								{
+									"key": "sort_order",
+									"value": "asc",
+									"description": "Order: asc, desc"
+								},
+								{
+									"key": "per_page",
+									"value": "15",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "List bookings with filtering. **Admin/Doctor only** - requires `booking.view` permission.\n\n**Access Control:**\n- Admin: sees all bookings\n- Doctor: sees only their own bookings"
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/bookings?search=&user_id=&start_date=&end_date=&treatment_id=&is_cancelled=0&sort_by=start_datetime&sort_order=asc&per_page=15",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"bookings"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "",
+											"description": "Search by patient name, email, or phone"
+										},
+										{
+											"key": "user_id",
+											"value": "",
+											"description": "Filter by doctor ID"
+										},
+										{
+											"key": "start_date",
+											"value": "",
+											"description": "Filter by start date"
+										},
+										{
+											"key": "end_date",
+											"value": "",
+											"description": "Filter by end date"
+										},
+										{
+											"key": "treatment_id",
+											"value": "",
+											"description": "Filter by treatment ID"
+										},
+										{
+											"key": "is_cancelled",
+											"value": "0",
+											"description": "Filter by cancellation status 0  / 1 "
+										},
+										{
+											"key": "sort_by",
+											"value": "start_datetime",
+											"description": "Sort by: start_datetime"
+										},
+										{
+											"key": "sort_order",
+											"value": "asc",
+											"description": "Order: asc, desc"
+										},
+										{
+											"key": "per_page",
+											"value": "15",
+											"description": "Items per page"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 07:09:10 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Record fetched successfully\",\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"treatment\": {\n                    \"id\": 6,\n                    \"title\": \"Blood Test\",\n                    \"duration\": 10,\n                    \"price\": \"40.00\"\n                },\n                \"doctor\": {\n                    \"id\": 2,\n                    \"name\": \"Dr. Doctor 1\",\n                    \"email\": \"doctor1@hospital.com\"\n                },\n                \"start_datetime\": \"2026-05-10T09:00:00.000000Z\",\n                \"end_datetime\": \"2026-05-10T09:10:00.000000Z\",\n                \"patient\": {\n                    \"name\": \"John Patient\",\n                    \"email\": \"john.patient@email.com\",\n                    \"phone\": \"+1234567890\"\n                },\n                \"is_cancelled\": false,\n                \"created_at\": \"2026-05-09T07:06:22.000000Z\"\n            },\n            {\n                \"id\": 2,\n                \"treatment\": {\n                    \"id\": 6,\n                    \"title\": \"Blood Test\",\n                    \"duration\": 10,\n                    \"price\": \"40.00\"\n                },\n                \"doctor\": {\n                    \"id\": 2,\n                    \"name\": \"Dr. Doctor 1\",\n                    \"email\": \"doctor1@hospital.com\"\n                },\n                \"start_datetime\": \"2026-05-10T10:00:00.000000Z\",\n                \"end_datetime\": \"2026-05-10T10:10:00.000000Z\",\n                \"patient\": {\n                    \"name\": \"devang shah\",\n                    \"email\": \"devang@gmail.com\",\n                    \"phone\": \"+1234567880\"\n                },\n                \"is_cancelled\": false,\n                \"created_at\": \"2026-05-09T07:07:19.000000Z\"\n            }\n        ],\n        \"pagination\": {\n            \"current_page\": 1,\n            \"per_page\": 15,\n            \"total\": 2,\n            \"last_page\": 1,\n            \"from\": 1,\n            \"to\": 2\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Cancel Booking (Doctor)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/bookings/2/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bookings",
+								"2",
+								"cancel"
+							]
+						},
+						"description": "Cancel a booking. **Doctor only** - requires `booking.cancel` permission.\n\nSets `is_cancelled` flag to true. Booking remains in database for records."
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/bookings/2/cancel",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"bookings",
+										"2",
+										"cancel"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 07:10:09 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 200,\n    \"success\": true,\n    \"message\": \"Booking cancelled successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"is_cancelled\": true,\n        \"updated_at\": \"2026-05-09T07:10:09.000000Z\"\n    }\n}"
+						},
+						{
+							"name": "success - 2",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/bookings/2/cancel",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"bookings",
+										"2",
+										"cancel"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.30"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 09 May 2026 07:10:28 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": 400,\n    \"success\": false,\n    \"message\": \"Booking is already cancelled\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Booking management endpoints for creating, listing, and cancelling appointments."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
