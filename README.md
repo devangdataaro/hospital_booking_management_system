@@ -99,7 +99,8 @@ php artisan migrate
 Generate OAuth2 encryption keys:
 
 ```bash
-php artisan passport:install
+php artisan key:generate
+php artisan passport:client --personal
 ```
 
 **Important:** Save the Client ID and Client Secret from the output for API authentication.
